@@ -1,0 +1,41 @@
+# 后端代码自动部署
+stages:
+    - npm
+    - deploy
+
+# 变量
+variables:
+    # 注意：修改路径为实际项目路径，与pm2.json文件中的项目路径相同
+    PROJECT_PATH: "/www/wwwroot/moac-wallet.moacchina.info/moac-wallet-backend"
+    # 注意：修改项目名为自定的项目名，与pm2.json文件中的项目名称相同
+    PROJECT_NAME: "moac-wallet-backend"
+
+# 所有任务启动前执行
+before_script:
+    - cd "$PROJECT_PATH"
+
+# npm install
+npm:
+    stage: npm
+    only:
+        refs:
+            # 注意：修改master为实际稳定可用的分支名
+            - master
+        changes:
+            - package.json
+    tags:
+        - wallet
+    script:
+        - npm install
+
+# 部署测试服务器
+deploy:
+    stage: deploy
+    only:
+        # 注意：修改master为实际稳定可用的分支名
+        - master
+    tags:
+        - wallet
+    script:
+        - git pull
+        - pm2 start pm2.json

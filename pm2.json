@@ -1,0 +1,17 @@
+{
+    "apps": [
+        {
+            "name": "moac-wallet-backend", // 项目名称，与gitlab-ci.yml文件中的项目名称相同
+            "cwd": "/www/wwwroot/moac-wallet.moacchina.info/moac-wallet-backend", // 项目路径，与gitlab-ci.yml文件中的项目路径相同
+            "script": "app.js", // 项目启动文件
+            "exec_interpreter": "node",
+            "min_uptime": "60s",
+            "max_restarts": 15,
+            "autorestart": true,
+            "out_file": "./logs/out.log", // 普通日志路径
+            "error_file": "./logs/err.log", // 错误日志路径
+            "merge_logs": true,
+            "log_date_format": "YYYY-MM-DD HH:mm:ss.SSS"
+        }
+    ]
+}
