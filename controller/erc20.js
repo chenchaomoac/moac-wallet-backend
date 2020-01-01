@@ -12,7 +12,22 @@ const response = (data, ctx) => {
 
 const erc20 = {
     async getErc20List(ctx) {
-        const result = await Erc20.findAll();
+        const result = await Erc20.findAll({
+            attributes: [
+                "base",
+                "symbol",
+                "name",
+                "address",
+                "balance",
+                "decimals",
+                "supply",
+                "owner",
+                "icon",
+            ],
+            where: {
+                deleted: 0,
+            },
+        });
         response(result, ctx);
     },
 };
