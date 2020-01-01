@@ -1,11 +1,11 @@
 module.exports = {
-    port: 3000,
+    port: 7000,
     db: {
         addr: "localhost",
         port: 3306,
-        user: "root",
-        password: "1",
-        name: "MoacWallet",
+        user: "moac_wallet_moac",
+        password: "afX6DHJJZxkSwKJk",
+        name: "moac_wallet_moac",
     },
     Nos: {
         accessKey: "509cb4a36f6f479a8a835640a697e5e7",
