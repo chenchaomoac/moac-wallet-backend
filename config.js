@@ -1,5 +1,5 @@
 module.exports = {
-    port: 7000,
+    port: 7500,
     db: {
         addr: "localhost",
         port: 3306,
