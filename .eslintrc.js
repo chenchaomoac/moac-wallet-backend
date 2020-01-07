@@ -64,7 +64,7 @@ module.exports = {
         // ],
         // "arrow-parens": ["error", "as-needed"],
         // "arrow-body-style": ["error", "as-needed"],
-        // "prefer-promise-reject-errors": "off",
+        "prefer-promise-reject-errors": "off",
         // "react/jsx-no-useless-fragment": "off",
         // "@typescript-eslint/explicit-member-accessibility": "off",
         // "@typescript-eslint/no-require-imports": "off",
