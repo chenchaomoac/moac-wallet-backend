@@ -34,7 +34,7 @@ const erc20 = {
             where,
         });
         const response = result.map((value) => {
-            return { ...value, balance: 0 };
+            return { ...value.dataValues, balance: 0 };
         });
         ctx.body = response;
     },
