@@ -2,15 +2,15 @@
  * @Description: 网易云对象储存的相关操作方法
  * @Author: Chen Chao
  * @Date: 2019-06-11 10:47:19
- * @LastEditTime : 2020-01-01 10:08:57
+ * @LastEditTime : 2020-01-07 10:18:16
  * @LastEditors  : Please set LastEditors
  */
 const { NosClient } = require("@xgheaven/nos-node-sdk");
 const fs = require("fs");
-const config = require("./config");
+const config = require("../config");
 
 // 获取访问信息，新建实例
-const NosConfig = config.getNosInfo();
+const NosConfig = config.Nos;
 const nos = new NosClient({
     accessKey: NosConfig.accessKey,
     accessSecret: NosConfig.accessSecret,
