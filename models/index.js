@@ -1,4 +1,4 @@
-const Sequelize = require("sequelize");
+const { Sequelize } = require("sequelize");
 const DBInfo = require("../config").db;
 
 const sequelize = new Sequelize(DBInfo.name, DBInfo.user, DBInfo.password, {
@@ -31,4 +31,9 @@ const sequelize = new Sequelize(DBInfo.name, DBInfo.user, DBInfo.password, {
     sync: { force: true },
 });
 
-module.exports = sequelize;
+const Erc20 = sequelize.import("./Erc20");
+
+module.exports = {
+    sequelize,
+    Erc20,
+};
