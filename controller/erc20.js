@@ -1,15 +1,17 @@
 const { sequelize, Erc20 } = require("../models");
+const Op = sequelize.Sequelize.Op;
 
 const Nos = require("../utils/Nos");
 const deleteFile = require("../utils/deleteFile");
+const chain3 = require("../utils/chain3");
+const retry = require("async-retry");
 
 const erc20 = {
     getErc20List: async (ctx) => {
         // const { keyword, page = 1, size = 10 } = ctx.request.query;
         const { keyword } = ctx.request.query;
 
-        const Op = sequelize.Sequelize.Op;
-        const where = { deleted: 0 };
+        const where = { deleted: 0, address: { [Op.ne]: "0x" } };
         if (keyword) {
             where[Op.or] = [
                 { symbol: { [Op.like]: `%${keyword}%` } },
@@ -50,10 +52,16 @@ const erc20 = {
         }
 
         const fileName = `${Date.now()}-${icon.name}`;
-        const rawUrl = await Nos.upload(fileName, icon.path);
-        if (Nos.isExist(fileName)) {
-            deleteFile(icon.path);
-        }
+        const rawUrl = await retry(
+            async () => {
+                const rawUrl = await Nos.upload(fileName, icon.path);
+                return rawUrl;
+            },
+            {
+                retries: 5,
+            },
+        );
+        rawUrl && deleteFile(icon.path);
         const url = rawUrl.split("?")[0];
 
         const data = {
@@ -74,17 +82,42 @@ const erc20 = {
             data.owner = owner;
         }
 
-        try {
-            const result = await Erc20.upsert(data);
-            if (result) {
-                console.log("Insert data success:", data);
-            } else {
-                console.log("Data exist:", data);
-            }
-            ctx.body = { success: true };
-        } catch (error) {
-            console.log("Insert data fail:", error);
-            ctx.body = { error };
+        // try {
+        const result = await Erc20.upsert(data);
+        if (result) {
+            console.log("Insert data success:", data);
+        } else {
+            console.log("Data exist:", data);
+        }
+        ctx.body = { success: true };
+        // } catch (error) {
+        //     console.log("Insert data fail:", error);
+        //     ctx.body = { error };
+        // }
+
+        if (!txHash || address) {
+            return;
+        }
+
+        await chain3.waitBlock(3, 60);
+        const contractAddress = chain3.getContractAddress(txHash);
+        if (!contractAddress) {
+            console.log("Get contract address error:", txHash);
+            return;
+        }
+        if (!chain3.isValidContract(contractAddress)) {
+            console.log("Address is not a valid contract address:", contractAddress);
+            return;
+        }
+
+        const [number] = await Erc20.update(
+            { address: contractAddress },
+            { where: { [Op.eq]: { txHash } } },
+        );
+        if (number !== 0) {
+            console.log("Update contract address success:", contractAddress);
+        } else {
+            console.log("Update contract address fail:", contractAddress);
         }
     },
 };
