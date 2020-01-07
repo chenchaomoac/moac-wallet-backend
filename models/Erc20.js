@@ -27,11 +27,6 @@ module.exports = function(sequelize, DataTypes) {
                 defaultValue: "0x",
                 primaryKey: true,
             },
-            balance: {
-                type: DataTypes.FLOAT,
-                allowNull: false,
-                defaultValue: "0",
-            },
             decimals: {
                 type: DataTypes.INTEGER(10).UNSIGNED,
                 allowNull: false,
