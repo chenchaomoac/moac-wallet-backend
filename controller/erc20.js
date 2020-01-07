@@ -94,31 +94,30 @@ const erc20 = {
         //     ctx.body = { error };
         // }
 
-        if (!txHash || address) {
-            return;
-        }
-
-        await chain3.waitBlock(3, 60);
-        const contractAddress = chain3.getContractAddress(txHash);
-        if (!contractAddress) {
-            console.log("Get contract address error:", txHash);
-            return;
-        }
-        if (!chain3.isValidContract(contractAddress)) {
-            console.log("Address is not a valid contract address:", contractAddress);
-            return;
-        }
-
-        const [number] = await Erc20.update(
-            { address: contractAddress },
-            { where: { [Op.eq]: { txHash } } },
-        );
-        if (number !== 0) {
-            console.log("Update contract address success:", contractAddress);
-        } else {
-            console.log("Update contract address fail:", contractAddress);
+        if (txHash && !address) {
+            updateContractAddress(txHash);
         }
     },
+};
+
+const updateContractAddress = async (txHash) => {
+    await chain3.waitBlock(3, 60);
+    const contractAddress = chain3.getContractAddress(txHash);
+    if (!contractAddress) {
+        console.log("Get contract address error:", txHash);
+        return;
+    }
+    if (!chain3.isValidContract(contractAddress)) {
+        console.log("Address is not a valid contract address:", contractAddress);
+        return;
+    }
+
+    const [number] = await Erc20.update({ address: contractAddress }, { where: { txHash } });
+    if (number !== 0) {
+        console.log("Update contract address success:", contractAddress);
+    } else {
+        console.log("Update contract address fail:", contractAddress);
+    }
 };
 
 module.exports = erc20;
