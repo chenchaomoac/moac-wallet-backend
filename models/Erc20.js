@@ -1,18 +1,11 @@
-/* jshint indent: 2 */
-
 module.exports = function(sequelize, DataTypes) {
     return sequelize.define(
         "Erc20",
         {
-            id: {
-                type: DataTypes.INTEGER(10).UNSIGNED,
-                allowNull: false,
-                primaryKey: true,
-                autoIncrement: true,
-            },
             base: {
                 type: DataTypes.STRING(10),
                 allowNull: false,
+                primaryKey: true,
             },
             symbol: {
                 type: DataTypes.STRING(10),
@@ -25,10 +18,19 @@ module.exports = function(sequelize, DataTypes) {
             address: {
                 type: DataTypes.STRING(42),
                 allowNull: false,
+                defaultValue: "0x",
+                primaryKey: true,
+            },
+            txHash: {
+                type: DataTypes.STRING(66),
+                allowNull: false,
+                defaultValue: "0x",
+                primaryKey: true,
             },
             balance: {
                 type: DataTypes.FLOAT,
-                allowNull: true,
+                allowNull: false,
+                defaultValue: "0",
             },
             decimals: {
                 type: DataTypes.INTEGER(10).UNSIGNED,
@@ -37,11 +39,13 @@ module.exports = function(sequelize, DataTypes) {
             },
             supply: {
                 type: DataTypes.BIGINT,
-                allowNull: true,
+                allowNull: false,
+                defaultValue: "1",
             },
             owner: {
                 type: DataTypes.STRING(42),
                 allowNull: true,
+                defaultValue: "0x",
             },
             icon: {
                 type: DataTypes.TEXT,
