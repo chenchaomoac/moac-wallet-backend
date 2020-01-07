@@ -9,15 +9,19 @@ const retry = require("async-retry");
 const erc20 = {
     getErc20List: async (ctx) => {
         // const { keyword, page = 1, size = 10 } = ctx.request.query;
-        const { keyword } = ctx.request.query;
+        const { keyword, txHash } = ctx.request.query;
 
-        const where = { deleted: 0, address: { [Op.ne]: "0x" } };
+        const where = { deleted: 0 };
         if (keyword) {
             where[Op.or] = [
                 { symbol: { [Op.like]: `%${keyword}%` } },
                 // { name: { [Op.like]: `%${keyword}%` } },
                 { address: { [Op.like]: `%${keyword}%` } },
             ];
+            where.address = { [Op.ne]: "0x" };
+        }
+        if (txHash) {
+            where.txHash = txHash;
         }
 
         const result = await Erc20.findAll({
