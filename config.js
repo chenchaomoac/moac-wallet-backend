@@ -13,4 +13,5 @@ module.exports = {
         endpoint: "http://nos-eastchina1.126.net",
         defaultBucket: "moac-wallet",
     },
+    rpc: "http://node.moacchina.info",
 };
