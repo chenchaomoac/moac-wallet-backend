@@ -26,7 +26,6 @@ const erc20 = {
                 "symbol",
                 "name",
                 "address",
-                "balance",
                 "decimals",
                 "supply",
                 "owner",
@@ -34,7 +33,7 @@ const erc20 = {
             ],
             where,
         });
-        ctx.body = result;
+        ctx.body = { ...result, balance: 0 };
     },
     addErc20: async (ctx) => {
         const { icon } = ctx.request.files;
