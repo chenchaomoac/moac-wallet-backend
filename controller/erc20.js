@@ -33,7 +33,10 @@ const erc20 = {
             ],
             where,
         });
-        ctx.body = { ...result, balance: 0 };
+        const response = result.map((value) => {
+            return { ...value, balance: 0 };
+        });
+        ctx.body = response;
     },
     addErc20: async (ctx) => {
         const { icon } = ctx.request.files;
