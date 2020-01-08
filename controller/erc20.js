@@ -13,11 +13,19 @@ const erc20 = {
 
         const where = { deleted: 0 };
         if (keyword) {
-            where[Op.or] = [
-                { symbol: { [Op.like]: `%${keyword}%` } },
-                // { name: { [Op.like]: `%${keyword}%` } },
-                { address: { [Op.like]: `%${keyword}%` } },
-            ];
+            if (keyword.startsWith("0x")) {
+                where[Op.or] = [
+                    // { symbol: { [Op.like]: `%${keyword}%` } },
+                    // { name: { [Op.like]: `%${keyword}%` } },
+                    { address: { [Op.like]: `${keyword}%` } },
+                ];
+            } else {
+                where[Op.or] = [
+                    { symbol: { [Op.like]: `%${keyword}%` } },
+                    // { name: { [Op.like]: `%${keyword}%` } },
+                    // { address: { [Op.like]: `%${keyword}%` } },
+                ];
+            }
             where.address = { [Op.ne]: "0x" };
         }
         if (txHash) {
