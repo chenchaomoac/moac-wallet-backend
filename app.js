@@ -66,6 +66,9 @@ app.on("error", (err, ctx) => {
     console.error("server error", err, ctx);
 });
 
+const cronjob = require("./cronjob");
+console.log("Cronjob start at:", cronjob.nextInvocation().toLocaleString());
+
 // 设置端口
 const port = process.env.PORT || config.port;
 
