@@ -65,8 +65,9 @@ const job = schedule.scheduleJob("Get Moac Price", "*/6 * * * *", () => {
                 response.data["2403"].quote["CNY"]
             ) {
                 const { price, last_updated } = response.data["2403"].quote["CNY"];
-                const now = new Date();
-                console.log(now.toLocaleString("zh-CN", { hour12: false }), "\tprice:", price);
+                // const now = new Date();
+                console.log("price:", price);
+                // console.log(now.toLocaleString("zh-CN", { hour12: false }), "\tprice:", price);
                 global.price = { MOAC: { price, lastUpdate: last_updated } };
             }
         })
