@@ -32,8 +32,10 @@ const sequelize = new Sequelize(DBInfo.name, DBInfo.user, DBInfo.password, {
 });
 
 const Erc20 = sequelize.import("./Erc20");
+const EthErc20 = sequelize.import("./EthErc20");
 
 module.exports = {
     sequelize,
     Erc20,
+    EthErc20,
 };
