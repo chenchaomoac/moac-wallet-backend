@@ -1,11 +1,11 @@
 const schedule = require("node-schedule");
 const rp = require("request-promise");
 
-const requestOptions = {
+const moac = {
     method: "GET",
     uri: "https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest",
     qs: {
-        id: "2403",
+        symbol: "MOAC",
         convert: "CNY",
     },
     headers: {
@@ -15,8 +15,22 @@ const requestOptions = {
     gzip: true,
 };
 
+const eth = {
+    method: "GET",
+    uri: "https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest",
+    qs: {
+        symbol: "ETH",
+        convert: "CNY",
+    },
+    headers: {
+        "X-CMC_PRO_API_KEY": "0b6e2f3d-66c5-4bb1-9fc3-ea3fa7e07f64",
+    },
+    json: true,
+    gzip: true,
+};
+
 const job = schedule.scheduleJob("Get Moac Price", "*/6 * * * *", () => {
-    rp(requestOptions)
+    rp(moac)
         .then((response) => {
             // const responseExample = {
             //     status: {
@@ -28,7 +42,7 @@ const job = schedule.scheduleJob("Get Moac Price", "*/6 * * * *", () => {
             //         notice: null,
             //     },
             //     data: {
-            //         "2403": {
+            //         "MOAC": {
             //             id: 2403,
             //             name: "MOAC",
             //             symbol: "MOAC",
@@ -60,19 +74,43 @@ const job = schedule.scheduleJob("Get Moac Price", "*/6 * * * *", () => {
             if (
                 response &&
                 response.data &&
-                response.data["2403"] &&
-                response.data["2403"].quote &&
-                response.data["2403"].quote["CNY"]
+                response.data.MOAC &&
+                response.data.MOAC.quote &&
+                response.data.MOAC.quote["CNY"]
             ) {
-                const { price, last_updated } = response.data["2403"].quote["CNY"];
-                // const now = new Date();
-                console.log("price:", price);
-                // console.log(now.toLocaleString("zh-CN", { hour12: false }), "\tprice:", price);
-                global.price = { moac: { price, lastUpdate: last_updated } };
+                const { price, last_updated } = response.data.MOAC.quote["CNY"];
+                const now = new Date();
+                console.log(now.toLocaleString("zh-CN", { hour12: false }), "\tmoac price:", price);
+                global.price = {
+                    ...global.price,
+                    MOAC: { symbol: "MOAC", price, lastUpdate: last_updated },
+                };
             }
         })
         .catch((err) => {
-            console.log("API call error:", err);
+            console.log("Moac API call error:", err);
+        });
+
+    rp(eth)
+        .then((response) => {
+            if (
+                response &&
+                response.data &&
+                response.data.ETH &&
+                response.data.ETH.quote &&
+                response.data.ETH.quote["CNY"]
+            ) {
+                const { price, last_updated } = response.data.ETH.quote["CNY"];
+                const now = new Date();
+                console.log(now.toLocaleString("zh-CN", { hour12: false }), "\teth price:", price);
+                global.price = {
+                    ...global.price,
+                    ETH: { symbol: "ETH", price, lastUpdate: last_updated },
+                };
+            }
+        })
+        .catch((err) => {
+            console.log("Eth API call error:", err);
         });
 });
 
