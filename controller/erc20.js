@@ -1,4 +1,4 @@
-const { sequelize, Erc20 } = require("../models");
+const { sequelize, Erc20, EthErc20 } = require("../models");
 const Op = sequelize.Sequelize.Op;
 
 const Nos = require("../utils/Nos");
@@ -8,8 +8,7 @@ const retry = require("async-retry");
 
 const erc20 = {
     getErc20List: async (ctx) => {
-        // const { keyword, page = 1, size = 10 } = ctx.request.query;
-        const { keyword, txHash } = ctx.request.query;
+        const { base = "moac", keyword, txHash, page = 1, size = 10 } = ctx.request.query;
 
         const where = { deleted: 0 };
         if (keyword) {
@@ -32,7 +31,7 @@ const erc20 = {
             where.txHash = txHash;
         }
 
-        const result = await Erc20.findAll({
+        const result = await (base === "moac" ? Erc20 : EthErc20).findAll({
             attributes: [
                 "base",
                 "symbol",
@@ -44,6 +43,8 @@ const erc20 = {
                 "icon",
             ],
             where,
+            offset: (page - 1) * size,
+            limit: size,
         });
         const response = result.map((value) => {
             return { ...value.dataValues, balance: 0 };
@@ -97,7 +98,7 @@ const erc20 = {
         }
 
         // try {
-        const result = await Erc20.upsert(data);
+        const result = await (base === "moac" ? Erc20 : EthErc20).upsert(data);
         if (result) {
             console.log("Insert data success:", data);
         } else {
@@ -109,7 +110,7 @@ const erc20 = {
         //     ctx.body = { error };
         // }
 
-        if (txHash && !address) {
+        if (base === "moac" && txHash && !address) {
             updateContractAddress(txHash);
         }
     },
